@@ -4,20 +4,20 @@ C# / VB.NET Easy and Usefully ReadWriteMemory Functions developered by omertrans
 Usage:
 https://memoryhackers.org/konular/readwritememory-library-v2-0.229409/
 
-Functions:\n
-WriteByte() - included Array Bytes and Number System
-WriteShort()
-WriteInteger()
-WriteLong()
-WriteFloat()
-WriteDouble()
-WriteString() - Support System.Text.Encoding
-WriteBool() - Added
-ReadByte()
-ReadShort()
-ReadInteger()
-ReadLong()
-ReadFloat()
-ReadDouble()
-ReadString() - Support System.Text.Encoding
-ReadBool() - Added
+Functions: <br>
+WriteByte() - included Array Bytes and Number System <br>
+WriteShort() <br>
+WriteInteger() <br>
+WriteLong() <br>
+WriteFloat() <br>
+WriteDouble() <br>
+WriteString() - Support System.Text.Encoding <br>
+WriteBool() - Added <br>
+ReadByte() <br>
+ReadShort() <br>
+ReadInteger() <br>
+ReadLong() <br>
+ReadFloat() <br>
+ReadDouble() <br>
+ReadString() - Support System.Text.Encoding <br>
+ReadBool() - Added <br>
