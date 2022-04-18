@@ -4,7 +4,7 @@ C# / VB.NET Easy and Usefully ReadWriteMemory Functions developered by omertrans
 Usage:
 https://memoryhackers.org/konular/readwritememory-library-v2-0.229409/
 
-Functions:
+Functions:\n
 WriteByte() - included Array Bytes and Number System
 WriteShort()
 WriteInteger()
