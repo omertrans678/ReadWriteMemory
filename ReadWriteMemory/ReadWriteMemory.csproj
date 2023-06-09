@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{52FF83A2-D2F7-45FB-8BFC-B8B983233468}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ReadWriteMemory</RootNamespace>
+    <AssemblyName>ReadWriteMemory</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReadWriteMemory x86|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ReadWriteMemory x86\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Debug\Console.cs" />
+    <Compile Include="Exceptions\FailedReadMemoryException.cs" />
+    <Compile Include="Exceptions\FailedWriteMemoryException.cs" />
+    <Compile Include="Exceptions\InvalidHexadecimalFormatException.cs" />
+    <Compile Include="Exceptions\InvalidPointerException.cs" />
+    <Compile Include="Exceptions\InvalidProcessIdException.cs" />
+    <Compile Include="Exceptions\InvalidValueException.cs" />
+    <Compile Include="Exceptions\InvalidVariableTypeException.cs" />
+    <Compile Include="Exceptions\ModuleNameMissingException.cs" />
+    <Compile Include="Exceptions\ModuleNotFoundException.cs" />
+    <Compile Include="Exceptions\PointerNotFoundAfterOffsetException.cs" />
+    <Compile Include="Exceptions\PointerNotFoundException.cs" />
+    <Compile Include="Exceptions\ProcessNotRespondingException.cs" />
+    <Compile Include="Exceptions\OpenProcessFailedException.cs" />
+    <Compile Include="Exceptions\ProcessNullException.cs" />
+    <Compile Include="Exceptions\TooManyModulesException.cs" />
+    <Compile Include="Exceptions\TooManyProcessesException.cs" />
+    <Compile Include="Extensions\DataTypeSizeExtensions.cs" />
+    <Compile Include="Extensions\TypeConversionExtensions.cs" />
+    <Compile Include="Pattern.cs" />
+    <Compile Include="Utility\MemoryUtility.cs" />
+    <Compile Include="Win32\Native.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\Process.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
