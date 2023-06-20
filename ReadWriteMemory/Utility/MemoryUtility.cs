@@ -23,7 +23,7 @@ namespace omertrans156.ReadWriteMemory.Utility
             String = 9
         }
 
-        internal static void Write(Utility.Process Process, object PointerOrModuleNamePointer, byte[] Value, DataTypeSize Data, params int[] WithOffset)
+        internal static void Write(MultiProcess Process, object PointerOrModuleNamePointer, byte[] Value, DataTypeSize Data, params int[] WithOffset)
         {
             foreach (var proc in Process.Processes)
             {
@@ -32,7 +32,7 @@ namespace omertrans156.ReadWriteMemory.Utility
             }
             Process.Dispose();
         }
-        internal static object Read(Utility.Process Process, object PointerOrModuleNamePointer, DataTypeSize Data, params int[] WithOffset)
+        internal static object Read(MultiProcess Process, object PointerOrModuleNamePointer, DataTypeSize Data, params int[] WithOffset)
         {
             if (Process.Processes.Length >= 2)
                 throw new TooManyProcessesException();
@@ -41,8 +41,8 @@ namespace omertrans156.ReadWriteMemory.Utility
             Process.Dispose();
             return readbytes.ToData(Data);
         }
-        internal static byte[] ReadC(Utility.Process Process, object PointerOrModuleNamePointer, int lenght, DataTypeSize Data, params int[] WithOffset)
-        {
+        internal static byte[] ReadC(MultiProcess Process, object PointerOrModuleNamePointer, int lenght, DataTypeSize Data, params int[] WithOffset)
+        {   
             if (Process.Processes.Length >= 2)
                 throw new TooManyProcessesException();
             int Pointer = PointerGenerate(Process.Processes[0], PointerOrModuleNamePointer, WithOffset);
@@ -50,7 +50,7 @@ namespace omertrans156.ReadWriteMemory.Utility
             Process.Dispose();
             return readbytes;
         }
-        internal static byte[][] ReadCA(Utility.Process Process, object ModuleNameAndPointer, int lenght, DataTypeSize Data, params int[] WithOffset)
+        internal static byte[][] ReadCA(MultiProcess Process, object ModuleNameAndPointer, int lenght, DataTypeSize Data, params int[] WithOffset)
         {
             List<byte[]> data = new List<byte[]>();
             foreach (var proc in Process.Processes)
@@ -62,7 +62,7 @@ namespace omertrans156.ReadWriteMemory.Utility
             Process.Dispose();
             return data.ToArray();
         }
-        internal static object[] ReadA(Utility.Process Process, string ModuleNameAndPointer, DataTypeSize Data, params int[] WithOffset)
+        internal static object[] ReadA(MultiProcess Process, string ModuleNameAndPointer, DataTypeSize Data, params int[] WithOffset)
         {
             List<object> data = new List<object>();
             foreach (var proc in Process.Processes)

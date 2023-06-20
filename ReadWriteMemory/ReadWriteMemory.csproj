@@ -76,7 +76,7 @@
     <Compile Include="Win32\Native.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\Process.cs" />
+    <Compile Include="Utility\MultiProcess.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

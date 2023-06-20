@@ -59,7 +59,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteByte(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToInt8().ToBytes(), MemoryUtility.DataTypeSize.Byte, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToInt8().ToBytes(), MemoryUtility.DataTypeSize.Byte, Offset);
         }
         /// <summary>
         /// Reads a byte value from the specified memory address in a process.
@@ -86,7 +86,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The byte value read from the memory address.</returns>
         public static byte ReadByte(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Byte, Offset).ToInt8();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Byte, Offset).ToInt8();
         }
         /// <summary>
         /// Reads a byte from the specified memory address per all processes.
@@ -112,7 +112,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>An array of bytes read from the memory address in each process.</returns>
         public static byte[] ReadByteAllProcess(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Byte, Offset).ToArrayInt8();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Byte, Offset).ToArrayInt8();
         }
         #endregion
         #region Array Bytes
@@ -145,7 +145,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteArrayBytes(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.GenerateNumberSystem(), MemoryUtility.DataTypeSize.ArrayBytes, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.GenerateNumberSystem(), MemoryUtility.DataTypeSize.ArrayBytes, Offset);
         }
         /// <summary>
         /// Reads an array of bytes from a specified memory address in a process.
@@ -173,7 +173,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>An array of bytes read from the specified memory address.</returns>
         public static byte[] ReadArrayBytes(object Process, object Pointer, int Length, params int[] Offset)
         {
-            return MemoryUtility.ReadC(new Process(Process), Pointer, Length, MemoryUtility.DataTypeSize.ArrayBytes, Offset);
+            return MemoryUtility.ReadC(new MultiProcess(Process), Pointer, Length, MemoryUtility.DataTypeSize.ArrayBytes, Offset);
         }
         /// <summary>
         /// Reads an array of bytes from the specified memory address per all processes.
@@ -200,7 +200,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>An array of bytes read from the memory address in each process.</returns>
         public static byte[][] ReadArrayBytesAllProcess(object Process, string Pointer, int Length, params int[] Offset)
         {
-            return MemoryUtility.ReadCA(new Process(Process), Pointer, Length, MemoryUtility.DataTypeSize.ArrayBytes, Offset);
+            return MemoryUtility.ReadCA(new MultiProcess(Process), Pointer, Length, MemoryUtility.DataTypeSize.ArrayBytes, Offset);
         }
         #endregion
         #region Short
@@ -234,7 +234,7 @@ namespace omertrans156.ReadWriteMemory
 
         public static void WriteShort(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToInt16().ToBytes(), MemoryUtility.DataTypeSize.Short, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToInt16().ToBytes(), MemoryUtility.DataTypeSize.Short, Offset);
         }
         /// <summary>
         /// Reads a short (Int16) value from the specified memory address in a process.
@@ -261,7 +261,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The short value read from the memory address.</returns>
         public static short ReadShort(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Short, Offset).ToInt16();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Short, Offset).ToInt16();
         }
         /// <summary>
         /// Reads a byte from the specified memory address per all processes.
@@ -285,9 +285,9 @@ namespace omertrans156.ReadWriteMemory
         ///     <see cref="params"/> <see cref="array"/> <see cref="byte"/>.
         /// </param>
         /// <returns>An short read from the memory address in each process.</returns>
-        public static short[] ReadShort(object Process, string Pointer, params int[] Offset)
+        public static short[] ReadShortAllProcess(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Short, Offset).ToArrayInt16();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Short, Offset).ToArrayInt16();
         }
         #endregion
         #region Integer
@@ -320,7 +320,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteInteger(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToInt32().ToBytes(), MemoryUtility.DataTypeSize.Int, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToInt32().ToBytes(), MemoryUtility.DataTypeSize.Int, Offset);
         }
         /// <summary>
         /// Reads a int (Int32) value from the specified memory address in a process.
@@ -347,7 +347,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The int value read from the memory address.</returns>
         public static int ReadInteger(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Int, Offset).ToInt32();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Int, Offset).ToInt32();
         }
         /// <summary>
         /// Reads a int from the specified memory address per all processes.
@@ -371,9 +371,9 @@ namespace omertrans156.ReadWriteMemory
         ///     <see cref="params"/> <see cref="array"/> <see cref="byte"/>.
         /// </param>
         /// <returns>An int read from the memory address in each process.</returns>
-        public static int[] ReadInteger(object Process, string Pointer, params int[] Offset)
+        public static int[] ReadIntegerAllProcesses(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Int, Offset).ToArrayInt32();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Int, Offset).ToArrayInt32();
         }
         #endregion
         #region Long
@@ -406,7 +406,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteLong(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToInt64().ToBytes(), MemoryUtility.DataTypeSize.Int, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToInt64().ToBytes(), MemoryUtility.DataTypeSize.Int, Offset);
         }
         /// <summary>
         /// Reads a long (Int64) value from the specified memory address in a process.
@@ -433,7 +433,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The long value read from the memory address.</returns>
         public static long ReadLong(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Long, Offset).ToInt64();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Long, Offset).ToInt64();
         }
         /// <summary>
         /// Reads a long from the specified memory address per all processes.
@@ -457,9 +457,9 @@ namespace omertrans156.ReadWriteMemory
         ///     <see cref="params"/> <see cref="array"/> <see cref="byte"/>.
         /// </param>
         /// <returns>An long read from the memory address in each process.</returns>
-        public static long[] ReadLong(object Process, string Pointer, params int[] Offset)
+        public static long[] ReadLongAllProcess(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Long, Offset).ToArrayInt64();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Long, Offset).ToArrayInt64();
         }
         #endregion
         #region Float
@@ -492,7 +492,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteFloat(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToFloat().ToBytes(), MemoryUtility.DataTypeSize.Float, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToFloat().ToBytes(), MemoryUtility.DataTypeSize.Float, Offset);
         }
         /// <summary>
         /// Reads a float (Single) value from the specified memory address in a process.
@@ -519,7 +519,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The float value read from the memory address.</returns>
         public static float ReadFloat(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Float, Offset).ToFloat();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Float, Offset).ToFloat();
         }
         /// <summary>
         /// Reads a float from the specified memory address per all processes.
@@ -543,9 +543,9 @@ namespace omertrans156.ReadWriteMemory
         ///     <see cref="params"/> <see cref="array"/> <see cref="byte"/>.
         /// </param>
         /// <returns>An float read from the memory address in each process.</returns>
-        public static float[] ReadFloat(object Process, string Pointer, params int[] Offset)
+        public static float[] ReadFloatAllProcess(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Float, Offset).ToArrayFloat();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Float, Offset).ToArrayFloat();
         }
         #endregion
         #region Double
@@ -578,7 +578,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteDouble(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToDouble().ToBytes(), MemoryUtility.DataTypeSize.Double, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToDouble().ToBytes(), MemoryUtility.DataTypeSize.Double, Offset);
         }
         /// <summary>
         /// Reads a double (Double) value from the specified memory address in a process.
@@ -605,7 +605,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The double value read from the memory address.</returns>
         public static double ReadDouble(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Double, Offset).ToDouble();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Double, Offset).ToDouble();
         }
         /// <summary>
         /// Reads a double from the specified memory address per all processes.
@@ -629,9 +629,9 @@ namespace omertrans156.ReadWriteMemory
         ///     <see cref="params"/> <see cref="array"/> <see cref="byte"/>.
         /// </param>
         /// <returns>An double read from the memory address in each process.</returns>
-        public static double[] ReadDouble(object Process, string Pointer, params int[] Offset)
+        public static double[] ReadDoubleAllProcess(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Double, Offset).ToArrayDouble();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Double, Offset).ToArrayDouble();
         }
         #endregion
         #region Bool
@@ -664,7 +664,7 @@ namespace omertrans156.ReadWriteMemory
         /// </param>
         public static void WriteBool(object Process, object Pointer, object Value, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToBool().ToBytes(), MemoryUtility.DataTypeSize.Bool, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToBool().ToBytes(), MemoryUtility.DataTypeSize.Bool, Offset);
         }
         /// <summary>
         /// Reads a Bool value from the specified memory address in a process.
@@ -691,7 +691,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The short value read from the memory address.</returns>
         public static bool ReadBool(object Process, object Pointer, params int[] Offset)
         {
-            return MemoryUtility.Read(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Bool, Offset).ToBool();
+            return MemoryUtility.Read(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Bool, Offset).ToBool();
         }
         /// <summary>
         /// Reads a bool from the specified memory address per all processes.
@@ -715,12 +715,11 @@ namespace omertrans156.ReadWriteMemory
         ///     <see cref="params"/> <see cref="array"/> <see cref="byte"/>.
         /// </param>
         /// <returns>An bool read from the memory address in each process.</returns>
-        public static bool[] ReadBool(object Process, string Pointer, params int[] Offset)
+        public static bool[] ReadBoolAllProcess(object Process, string Pointer, params int[] Offset)
         {
-            return MemoryUtility.ReadA(new Process(Process), Pointer, MemoryUtility.DataTypeSize.Bool, Offset).ToArrayBool();
+            return MemoryUtility.ReadA(new MultiProcess(Process), Pointer, MemoryUtility.DataTypeSize.Bool, Offset).ToArrayBool();
         }
         #endregion
-
         #region String
         /// <summary>
         /// Writes a string value to a specified memory address in a process.
@@ -738,7 +737,24 @@ namespace omertrans156.ReadWriteMemory
         /// <param name="Offset">Optional offsets to calculate the final memory address.</param>
         public static void WriteString(object Process, object Pointer, string Value, Encoding Type = null, params int[] Offset)
         {
-            MemoryUtility.Write(new Process(Process), Pointer, Value.ToBytes(Type ?? Encoding.UTF8), MemoryUtility.DataTypeSize.String, Offset);
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToBytes(Type ?? Encoding.UTF8), MemoryUtility.DataTypeSize.String, Offset);
+        }
+        /// <summary>
+        /// Writes a string value to a specified memory address in a process.
+        /// example:
+        /// <example>
+        /// <code>
+        /// Memory.WriteString("ac_client.exe", "ac_client.exe+FFFFFF", "Hello", offset[]);
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="Process">The process to write the string value to. It can be of type System.Diagnostics.Process, System.Diagnostics.Process[], int (Process ID), or string (Process Name).</param>
+        /// <param name="Pointer">The memory address to write the string value to. It can be of type int (Pointer) or string (Module Name + Pointer).</param>
+        /// <param name="Value">The string value to write.</param>
+        /// <param name="Offset">Optional offsets to calculate the final memory address.</param>
+        public static void WriteString(object Process, object Pointer, string Value, params int[] Offset)
+        {
+            MemoryUtility.Write(new MultiProcess(Process), Pointer, Value.ToBytes(Encoding.UTF8), MemoryUtility.DataTypeSize.String, Offset);
         }
         /// <summary>
         /// Reads a string value from a specified memory address in a process.
@@ -756,7 +772,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The string value read from the specified memory address.</returns>
         public static string ReadString(object Process, object Pointer, int Length, params int[] Offset)
         {
-            return MemoryUtility.ReadC(new Process(Process), Pointer, Length, MemoryUtility.DataTypeSize.String, Offset).ToString(Encoding.UTF8);
+            return MemoryUtility.ReadC(new MultiProcess(Process), Pointer, Length, MemoryUtility.DataTypeSize.String, Offset).ToString(Encoding.UTF8);
         }
         /// <summary>
         /// Reads a string value from a specified memory address in a process using the specified encoding.
@@ -775,7 +791,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>The string value read from the specified memory address.</returns>
         public static string ReadString(object Process, object Pointer, int Length, Encoding Type = null, params int[] Offset)
         {
-            return MemoryUtility.ReadC(new Process(Process), Pointer, Length, MemoryUtility.DataTypeSize.String, Offset).ToString(Type ?? Encoding.UTF8);
+            return MemoryUtility.ReadC(new MultiProcess(Process), Pointer, Length, MemoryUtility.DataTypeSize.String, Offset).ToString(Type ?? Encoding.UTF8);
         }
         /// <summary>
         /// Reads a string value from the specified memory address in all processes running on the system using the specified encoding.
@@ -794,7 +810,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>An array of string values read from the specified memory address in all processes.</returns>
         public static string[] ReadStringAllProcess(object Process, object Pointer, int Length, Encoding Type = null, params int[] Offset)
         {
-            return MemoryUtility.ReadCA(new Process(Process), Pointer, Length, MemoryUtility.DataTypeSize.String, Offset).ToString(Type ?? Encoding.UTF8);
+            return MemoryUtility.ReadCA(new MultiProcess(Process), Pointer, Length, MemoryUtility.DataTypeSize.String, Offset).ToString(Type ?? Encoding.UTF8);
         }
         #endregion
     }

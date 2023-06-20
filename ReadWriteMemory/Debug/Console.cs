@@ -2,7 +2,7 @@
 {
     internal class Console
     {
-        static readonly bool EnableDebug = false;
+        static readonly bool EnableDebug = true;
         public static void WriteLine(object msj)
         {
             if (!EnableDebug)
@@ -26,6 +26,12 @@
             if (!EnableDebug)
                 return;
             System.Console.Write(msj, args);
+        }
+        public static void Write(string format, object arg0, object arg1)
+        {
+            if (!EnableDebug)
+                return;
+            System.Console.Write(format, arg0, arg1);
         }
     }
 }

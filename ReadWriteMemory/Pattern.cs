@@ -1,13 +1,13 @@
 ﻿
-using omertrans156.ReadWriteMemory.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using omertrans156.ReadWriteMemory.Exceptions;
+using omertrans156.ReadWriteMemory.Utility;
 using static omertrans156.ReadWriteMemory.Win32.Native;
 using Console = omertrans156.ReadWriteMemory.Debug.Console;
-using Process = omertrans156.ReadWriteMemory.Utility.Process;
 
 namespace omertrans156.ReadWriteMemory
 {
@@ -27,7 +27,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>A list of memory addresses where the specified pattern is found.</returns>
         public static List<IntPtr> Scan(object Process, string pattern)
         {
-            Process process = new Process(Process);
+            MultiProcess process = new MultiProcess(Process);
             if (process.Processes.Length >= 2)
                 throw new TooManyProcessesException("Pattern Scan");
 
@@ -49,7 +49,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>A list of arrays, where each array contains process information and memory addresses where the specified pattern is found.</returns>
         public static List<IntPtr[]> ScanAllProcess(object Process, string pattern)
         {
-            Process process = new Process(Process);
+            MultiProcess process = new MultiProcess(Process);
             List<IntPtr[]> foundAddresses = new List<IntPtr[]>();
             foreach (var proc in process.Processes)
             {
@@ -75,7 +75,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>A list of memory addresses where the specified pattern is found within the specified address range.</returns>
         public static List<IntPtr> Scan(object Process, string pattern, long startAddress, long endAddress)
         {
-            Process process = new Process(Process);
+            MultiProcess process = new MultiProcess(Process);
             if (process.Processes.Length >= 2)
                 throw new TooManyProcessesException("Pattern Scan");
 
@@ -99,7 +99,7 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>A list of memory addresses where the specified pattern is found within the specified address range.</returns>
         public static List<IntPtr[]> ScanAllProcess(object Process, string pattern, long startAddress, long endAddress)
         {
-            Process process = new Process(Process);
+            MultiProcess process = new MultiProcess(Process);
             List<IntPtr[]> foundAddresses = new List<IntPtr[]>();
             foreach (var proc in process.Processes)
             {
@@ -125,15 +125,12 @@ namespace omertrans156.ReadWriteMemory
         /// <returns>A list of memory addresses where the specified pattern is found within the memory range of the specified module.</returns>
         public static List<IntPtr> ScanWithModule(object Process, string pattern, ProcessModule module)
         {
-            Process process = new Process(Process);
+            MultiProcess process = new MultiProcess(Process);
             if (process.Processes.Length >= 2)
                 throw new TooManyProcessesException("Pattern Scan");
 
             IntPtr processHandle = process.Processes[0].Handle;
             List<IntPtr> foundAddresses = ScanAsRange(processHandle, pattern, module.BaseAddress, new IntPtr(module.BaseAddress.ToInt64() + module.ModuleMemorySize));
-
-            for (int i = 0; i < foundAddresses.Count; i++)
-                foundAddresses[i] = IntPtr.Subtract(foundAddresses[i], module.BaseAddress.ToInt32());
             return foundAddresses;
         }
         /// <summary>
@@ -152,13 +149,12 @@ namespace omertrans156.ReadWriteMemory
         /// <param name="pattern">The pattern to search for in the memory.</param>
         /// <param name="module">The module within which the memory scan should be performed.</param>
         /// <returns>A list of memory addresses where the specified pattern is found within the memory range of the specified module.</returns>
-
         public static List<string> ScanWithModuleStr(object Process, string pattern, ProcessModule module)
         {
             List<IntPtr> foundAddresses = ScanWithModule(Process, pattern, module);
             List<string> foundAddressesWithModule = new List<string>();
             foreach (var adr in foundAddresses)
-                foundAddressesWithModule.Add(module.ModuleName + "+" + adr.ToString("X"));
+                foundAddressesWithModule.Add(module.ModuleName + "+" + (adr.ToInt32()-module.BaseAddress.ToInt32()).ToString("X"));
             return foundAddressesWithModule;
         }
         private static List<IntPtr> ScanAsRange(IntPtr processHandle, string pattern, IntPtr startAddress, IntPtr endAddress)
@@ -167,7 +163,7 @@ namespace omertrans156.ReadWriteMemory
             kronometre.Start();
             List<IntPtr> foundAddresses = new List<IntPtr>();
             IntPtr currentAddress = startAddress;
-            Console.WriteLine("BaseAddress Range: {0}-{1} size {2}", startAddress.ToString("X"), endAddress.ToString("X"), (endAddress.ToInt64() - startAddress.ToInt64()).ToString("X"));
+            Console.WriteLine("Set: {0}-{1} size {2}", startAddress.ToString("X"), endAddress.ToString("X"), (endAddress.ToInt64() - startAddress.ToInt64()).ToString("X"));
             while (true)
             {
                 if (endAddress != IntPtr.Zero && currentAddress.ToInt64() >= endAddress.ToInt64())
@@ -175,7 +171,14 @@ namespace omertrans156.ReadWriteMemory
                 if (VirtualQueryEx(processHandle, currentAddress, out MEMORY_BASIC_INFORMATION memInfo, (uint)Marshal.SizeOf(typeof(MEMORY_BASIC_INFORMATION))) == 0)
                     break;
 
-                Console.Write("{0}-{1} size {2,8}", memInfo.BaseAddress.ToString("X"), IntPtr.Add(memInfo.BaseAddress, memInfo.RegionSize.ToInt32()).ToString("X"));
+                if (memInfo.BaseAddress.ToInt64() < startAddress.ToInt64())
+                    memInfo.BaseAddress = startAddress;
+                if ((memInfo.BaseAddress.ToInt64() + memInfo.RegionSize.ToInt64()) > endAddress.ToInt64())
+                    memInfo.RegionSize = new IntPtr((endAddress.ToInt64() - startAddress.ToInt64()));
+                string val1 = memInfo.BaseAddress.ToString("X");
+                string val2 = IntPtr.Add(memInfo.BaseAddress, memInfo.RegionSize.ToInt32()).ToString("X");
+                string val3 = memInfo.RegionSize.ToString("X");
+                Console.Write("Cur: {0}-{1} size {2,8}", val1, val2, val3);
                 if (memInfo.State == MEM_COMMIT && memInfo.Protect != PAGE_NOACCESS)
                 {
                     List<IntPtr> moduleAddresses = ScanNow(processHandle, memInfo.BaseAddress, memInfo.RegionSize, pattern);
@@ -194,78 +197,47 @@ namespace omertrans156.ReadWriteMemory
             System.Console.WriteLine("Geçen süre: {0}", kronometre.Elapsed);
             return foundAddresses;
         }
-
         private static List<IntPtr> ScanNow(IntPtr processHandle, IntPtr baseAddress, IntPtr regionSize, string pattern)
         {
-            List<IntPtr> foundAddresses = new List<IntPtr>();
-
-            byte[] patternBytes = ParsePattern(pattern);
-            int patternLength = patternBytes.Length;
+            int[] patternBytes = ParsePattern(pattern);
             byte[] buffer = new byte[regionSize.ToInt32()];
-
             ReadProcessMemory(processHandle, baseAddress, buffer, buffer.Length, out _);
-
-            IntPtr address = IntPtr.Zero;
-            while ((address = ScanAlgoritmasi(buffer, patternBytes, address)) != IntPtr.Zero)
-            {
-                IntPtr foundAddress = IntPtr.Add(baseAddress, address.ToInt32());
-                foundAddresses.Add(foundAddress);
-                address = IntPtr.Add(address, patternLength);
-            }
-
-            return foundAddresses;
+            List<IntPtr> addresses = ScanAlgoritmasi(buffer, patternBytes, baseAddress);
+            return addresses;
         }
-        private static IntPtr ScanAlgoritmasi(byte[] buffer, byte[] pattern, IntPtr startIndex)
+        public static int[] ParsePattern(string pattern)
         {
-            int[] skipTable = new int[256];
-            int patternLength = pattern.Length;
+            var bytes = pattern.Split(' ');
+            int[] intlist = new int[bytes.Length];
 
-            for (int i = 0; i < skipTable.Length; i++)
+            for (int i = 0; i < intlist.Length; i++)
             {
-                skipTable[i] = patternLength;
-            }
-
-            for (int i = 0; i < patternLength - 1; i++)
-            {
-                byte currentByte = pattern[i];
-                skipTable[currentByte] = patternLength - i - 1;
-            }
-
-            int index = startIndex.ToInt32();
-            int bufferLength = buffer.Length;
-
-            while (index <= bufferLength - patternLength)
-            {
-                int patternIndex = patternLength - 1;
-                while (patternIndex >= 0 && (pattern[patternIndex] == buffer[index + patternIndex] || pattern[patternIndex] == 0xFF))
-                {
-                    patternIndex--;
-                }
-
-                if (patternIndex < 0)
-                {
-                    return new IntPtr(index);
-                }
-
-                index += skipTable[buffer[index + patternLength - 1]];
-            }
-
-            return IntPtr.Zero;
-        }
-        public static byte[] ParsePattern(string pattern)
-        {
-            string[] patternBytes = pattern.Split(' ');
-            List<byte> bytes = new List<byte>();
-
-            foreach (string patternByte in patternBytes)
-            {
-                if (patternByte == "??" || patternByte == "?" || patternByte == "XX" || patternByte == "X")
-                    bytes.Add(0xFF);
+                if (bytes[i] == "??" || bytes[i] == "?" || bytes[i] == "XX" || bytes[i] == "X")
+                    intlist[i] = -1;
                 else
-                    bytes.Add(byte.Parse(patternByte, NumberStyles.HexNumber));
+                    intlist[i] = int.Parse(bytes[i], NumberStyles.HexNumber);
             }
-            return bytes.ToArray();
+            return intlist;
         }
-
+        private static List<IntPtr> ScanAlgoritmasi(byte[] buffer, int[] pattern, IntPtr baseAddress)
+        {
+            var intlist = pattern;
+            var results = new List<IntPtr>();
+            for (int a = 0; a < buffer.Length; a++)
+            {
+                for (int b = 0; b < intlist.Length; b++)
+                {
+                    if ((a + b) >= buffer.Length)
+                        break;
+                    if (intlist[b] != -1 && intlist[b] != buffer[a + b])
+                        break;
+                    if (b + 1 == intlist.Length)
+                    {
+                        results.Add(new IntPtr(baseAddress.ToInt32()+a));
+                    }
+                }
+            }
+            return results;
+        }
     }
 }

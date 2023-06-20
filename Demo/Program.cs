@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using static omertrans156.ReadWriteMemory.Utility.MemoryUtility;
+using static omertrans156.ReadWriteMemory.Memory;
+using static omertrans156.ReadWriteMemory.Pattern;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using omertrans156.ReadWriteMemory;
-using omertrans156.ReadWriteMemory.Extensions;
+using System.Collections.Generic;
 
 namespace Demo
 {
@@ -14,26 +12,89 @@ namespace Demo
     {
         static void Main()
         {
-            Process game = Process.GetProcessesByName("ac_client")[0];
-            int ac_clientmodule = game.MainModule.BaseAddress.ToInt32();
+            Console.WriteLine("! Assault Cube Trainer with ReadWriteMemory !");
+            Console.WriteLine("Credit omertrans156");
 
-            // Usage
-            Memory.WriteInteger(game, ac_clientmodule + 0x0017E0A8, 9102448);
-            int val1 = Memory.ReadInteger(game, ac_clientmodule + 0x0017E0A8);
-            Console.WriteLine("Value1: " + val1);
-            int[] val2 = Memory.ReadInteger("ac_client", "ac_client.exe+0017E0A8");
-            foreach (int val in val2) { Console.WriteLine(val); }
-            
-            // Pattern/AoB Scan
-            string pattern =
-            "41 73 73 ?? 75 6C 74 43 75 62 65 20 31 2E 33 2E 30 2E 32 5C 62 69 6E 5F 77 69 6E 33 32 5C 61 63 5F 63 6C 69 65 6E 74 2E 65 78 65 00 00 00 00 00 00 00"; // Aranacak desen (pattern)
-            List<string> adresler = Pattern.ScanWithModuleStr(Process.GetProcessesByName("ac_client")[0].Id, pattern, Process.GetProcessesByName("ac_client")[0].MainModule);
-            foreach (var adr in adresler)
-            {
-                Console.WriteLine(adr);
-            }
-            Console.WriteLine("paused");
+            // game değişkenine Uygulama bilgisi atanıyor.
+            Process game = Process.GetProcessesByName("ac_client")[0];
+            /*
+            SearchModule(): ac_client modulu bilgisi al
+
+            module:     Oyunun Module base adresi kullanılarak çekilecek.
+            pointer:    Pointer
+            value:      Değer
+            offset:     Offset
+            */
+
+            int module = SearchModule(game,"ac_client").BaseAddress.ToInt32();
+            int pointer = 0x0017D848;
+            int value = 999;
+            int[] offset = { 0x40, 0xA50, 0x184 };
+            WriteInteger(game, module + pointer , value, offset);
+            Console.WriteLine("[+] Write Ammo Hack Actived");
+
+            Console.Write("[+] Read Ammo count: ");
+            int ammoCount = ReadInteger(game, module + pointer, offset);
+            Console.WriteLine(ammoCount);
+
+            Console.WriteLine("Done. paused");
             Console.ReadKey();
+
+            // Gelişmiş kullanımları
+
+            // Read or Write without any variable. '0x' for offset
+            WriteInteger("ac_client.exe", "ac_client.exe+0017D848", 999, 0x40, 0xA50, 0x184);
+            ReadInteger("ac_client.exe", "ac_client.exe+0017D848", 0x40, 0xA50, 0x184);
+
+            // Read or Write without offset
+            WriteInteger("ac_client.exe", "ac_client.exe+0017D848", 999);
+            ReadInteger("ac_client.exe", "ac_client.exe+0017D848");
+
+            // Read or Write All Process. 
+            WriteInteger("ac_client.exe", "ac_client.exe+0017D848", 999, offset);
+            ReadIntegerAllProcesses("ac_client.exe", "ac_client.exe+0017D848", offset);
+
+            // Read or Write with PID
+            WriteInteger(1234, "ac_client.exe+0017D848", 999, offset);
+            ReadInteger(1234, "ac_client.exe+0017D848", offset);
+
+            // Read or Write with Process and Process[]
+            Process[] games = Process.GetProcessesByName("ac_client");
+            WriteInteger(games, "ac_client.exe+0017D848", 999, offset);
+            ReadInteger(games, "ac_client.exe+0017D848", offset);
+
+            // Write string
+            WriteString(game, module + pointer, "Hi World", offset); //Write default as Encoding.UTF8
+            WriteString(game, module + pointer, "Hi World", Encoding.Unicode, offset); //Write as Encoding.Unicode
+
+            // Read string
+            ReadString(game, module + pointer, 12, offset); //Read with 12 length default as Encoding.UTF8
+            ReadString(game, module + pointer, 12, Encoding.Unicode, offset); //Read with 12 length as Encoding.Unicode
+
+            // AoB/Pattern/Signature Scan
+            // IntPtr is a pointer.
+            List<IntPtr> listOfBaseAddr = new List<IntPtr>();
+            // do not forget add this code: using static omertrans156.ReadWriteMemory.Pattern;
+
+            // Scan all
+            listOfBaseAddr = Scan(game, "F6 C4 41 75 6E 80 3D ?? ?? ?? ?? 00");
+
+            // Scan as Range StartAdress is 0x00000 and EndAddress is 0xFFFFFF
+            listOfBaseAddr = Scan(game, "F6 C4 41 75 6E 80 3D ?? ?? ?? ?? 00", 0x00000, 0xFFFFFF);
+
+            // Scan with Module
+            ProcessModule module2 = game.MainModule;
+            listOfBaseAddr = ScanWithModule(game, "F6 C4 41 75 6E 80 3D ?? ?? ?? ?? 00", module2);
+
+            // Scan with Module convert to String output: ac_client.exe+12345
+            string[] ModuleAndPointer = ScanWithModuleStr(game, "F6 C4 41 75 6E 80 3D ?? ?? ?? ?? 00", module2).ToArray();
+
+            // Scan all processes
+            List<IntPtr[]> listOfAddressPerProcesses = ScanAllProcess("ac_client.exe", "F6 C4 41 75 6E 80 3D ?? ?? ?? ?? 00");
+
+            // Scan a address and active the hack
+            int pointer2 = Scan(game, "F6 C4 41 75 6E 80 3D ?? ?? ?? ?? 00")[0].ToInt32();
+            WriteInteger(game, pointer2, 999);
         }
     }
 }
