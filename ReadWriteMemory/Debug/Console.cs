@@ -2,7 +2,7 @@
 {
     internal class Console
     {
-        static readonly bool EnableDebug = true;
+        static readonly bool EnableDebug = false;
         public static void WriteLine(object msj)
         {
             if (!EnableDebug)
